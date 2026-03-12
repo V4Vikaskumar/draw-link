@@ -1,7 +1,9 @@
 const { Server } = require("socket.io");
 
 const io = new Server(3001,{
-  cors:{origin:"*"}
+  cors:{
+    origin:"*"
+  }
 });
 
 console.log("Socket server running on port 3001");

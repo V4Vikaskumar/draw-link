@@ -10,6 +10,8 @@ import { useCopyPaste } from "../hooks/useCopyPaste";
 import { getElementBounds } from "../utils/elementBound";
 import { closeLive, startLive } from "../live_functions/start_and_close_live";
 
+import {socket_link_live}  from "../functions_files/socketlink";
+
 const CanvasBoard = ({ elements, setElements, tool }) => {
   const canvasRef = useRef(null);
   const [drawing,setDrawing] = useState(false);
@@ -24,7 +26,6 @@ const CanvasBoard = ({ elements, setElements, tool }) => {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [resizeCorner, setResizeCorner] = useState(null);
   const socketRef = useRef(null);
-
   const [roomId,setRoomId] = useState(null);
   const [isHost,setIsHost] = useState(false);
   const [liveEnabled,setLiveEnabled] = useState(false);
@@ -62,11 +63,9 @@ const CanvasBoard = ({ elements, setElements, tool }) => {
         tempCanvas.width = canvas.width;
         tempCanvas.height = canvas.height;
 
-        // white background
         tempCtx.fillStyle = "white";
         tempCtx.fillRect(0,0,tempCanvas.width,tempCanvas.height);
 
-        // draw original canvas
         tempCtx.drawImage(canvas,0,0);
 
         link.download = "canvas-image.jpeg";
@@ -94,9 +93,21 @@ const CanvasBoard = ({ elements, setElements, tool }) => {
   useEffect(() => {
     localStorage.setItem('elements', JSON.stringify(elements))
   },[elements]);
-
+  
   useEffect(()=>{
-    socketRef.current = io("http://localhost:3001");
+    socketRef.current = io(socket_link_live);
+    socketRef.current.on("init-elements",(data)=>{
+      setElements(data);
+    });
+
+    socketRef.current.on("elements-update",(data)=>{
+      setElements(prev => {
+        if(JSON.stringify(prev) === JSON.stringify(data)){
+          return prev;
+        }
+        return data;
+      });
+    });
     const params = new URLSearchParams(window.location.search);
     const room = params.get("room");
     if(room){
@@ -114,18 +125,16 @@ const CanvasBoard = ({ elements, setElements, tool }) => {
     });
 
     socketRef.current.on("room-closed",()=>{
-
       alert("Live session closed by host");
-
       setLiveEnabled(false);
-
     });
-
   },[]);
 
   
   useEffect(()=>{
     if(!liveEnabled) return;
+    if(!socketRef.current) return;
+    if(!roomId) return;
     socketRef.current.emit("canvas-update",{
       roomId,
       elements
