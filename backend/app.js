@@ -7,7 +7,6 @@ const { Server } = require("socket.io");
 const connectDB = require("./config/db");
 const boardRoutes = require("./routes/boardRouter");
 const Board = require("./models/boardModel");
-const Board = require("./models/board.model");
 
 const app = express();
 app.use(express.json());
