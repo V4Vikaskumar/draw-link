@@ -9,8 +9,9 @@ import { useUndoRedo } from "../hooks/useUndoRedo";
 import { useCopyPaste } from "../hooks/useCopyPaste";
 import { getElementBounds } from "../utils/elementBound";
 import { closeLive, startLive } from "../live_functions/start_and_close_live";
+import "../functions_files/server";
 
-import {socket_link_live}  from "../functions_files/socketlink";
+import { socket_link } from "../functions_files/socketlink";
 
 const CanvasBoard = ({ elements, setElements, tool }) => {
   const canvasRef = useRef(null);
@@ -95,7 +96,7 @@ const CanvasBoard = ({ elements, setElements, tool }) => {
   },[elements]);
   
   useEffect(()=>{
-    socketRef.current = io(socket_link_live);
+    socketRef.current = io(socket_link);
     socketRef.current.on("init-elements",(data)=>{
       setElements(data);
     });

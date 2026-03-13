@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { io } from "socket.io-client";
 import axios from "./api/axios";
 import CanvasBoard from "./components/canvasBoard";
-import socketlink from "./functions_files/socketlink";
 
 const App = () => {
   const [tool, setTool] = useState("select");
@@ -15,9 +14,9 @@ const App = () => {
   const [elements, setElements] = useState( JSON.parse(localStorage.getItem("elements")) || []);
   const [title, setTitle] = useState("");
 
-  // let SOCKET_URL = "http://localhost:4444";
+  let SOCKET_URL = "http://localhost:4444";
   useEffect(() => {
-    let s = io(socketlink);
+    let s = io(SOCKET_URL);
     setSocket(s);
     return () => s.disconnect();
   }, []);

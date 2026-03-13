@@ -1,1 +1,1 @@
-export const socket_link_live = 'https://draw-link-backend.onrender.com';
+export const socket_link = 'https://draw-link-backend.onrender.com';
