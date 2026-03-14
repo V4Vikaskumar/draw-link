@@ -1,5 +1,6 @@
 import axios from "axios";
+import { backend_link } from "../functions_files/socketlink";
 
 export default axios.create({
-  baseURL: "http://localhost:4444",
+  baseURL: backend_link,
 });
