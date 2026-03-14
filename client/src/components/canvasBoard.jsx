@@ -9,7 +9,6 @@ import { useUndoRedo } from "../hooks/useUndoRedo";
 import { useCopyPaste } from "../hooks/useCopyPaste";
 import { getElementBounds } from "../utils/elementBound";
 import { closeLive, startLive } from "../live_functions/start_and_close_live";
-import "../functions_files/server";
 
 import { socket_link } from "../functions_files/socketlink";
 
@@ -39,6 +38,7 @@ const CanvasBoard = ({ elements, setElements, tool }) => {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.setTransform(camera.zoom,0,0,camera.zoom,camera.x,camera.y);
+    // console.log("elements :", elements);
     elements.forEach(el => {
       drawElement(ctx,el);
       if(el.id === selectedId){
@@ -92,12 +92,13 @@ const CanvasBoard = ({ elements, setElements, tool }) => {
   },[erage]);
 
   useEffect(() => {
-    localStorage.setItem('elements', JSON.stringify(elements))
+    localStorage.setItem('elements', JSON.stringify([elements]))
   },[elements]);
   
   useEffect(()=>{
     socketRef.current = io(socket_link);
     socketRef.current.on("init-elements",(data)=>{
+      console.log("data :", data);
       setElements(data);
     });
 

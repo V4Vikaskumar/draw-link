@@ -11,8 +11,9 @@ const App = () => {
   const [socket, setSocket] = useState(null);
   const [boardId, setBoardId] = useState("");
   // const [board, setBoard] = useState("");
-  const [elements, setElements] = useState( JSON.parse(localStorage.getItem("elements")) || []);
+  const [elements, setElements] = useState(JSON.parse(localStorage.getItem("elements")) || []);
   const [title, setTitle] = useState("");
+  // console.log(typeof(elements))
 
   let SOCKET_URL = "http://localhost:4444";
   useEffect(() => {
@@ -58,6 +59,7 @@ const App = () => {
     if (!socket) return;
     socket.emit("elements-update", { boardId, elements });
     socket.on("elements-update", ({ elements }) => {
+      // console.log(typeof(elements))
       setElements(elements);
     });
 
